@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="趣味背单词 - 面向高中生的轻量化单词学习应用">
+    <meta name="keywords" content="背单词,英语学习,高中生,教育应用">
+    <meta name="author" content="FunWords Team">
+    <meta name="theme-color" content="#3BAFDA">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="FunWords">
+    
+    <!-- PWA支持 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" href="/icons/icon-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="/icons/icon-512x512.png" sizes="512x512">
+    
+    <title>趣味背单词 - FunWords</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- 首页 -->
+        <div id="home-page" class="page active">
+            <div class="container">
+                <header class="header">
+                    <h1 class="logo">FunWords</h1>
+                    <p class="subtitle">趣味背单词，轻松记单词</p>
+                </header>
+
+                <div class="dashboard">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-words">0</div>
+                            <div class="stat-label">已学单词</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="streak-days">0</div>
+                            <div class="stat-label">连续天数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="accuracy-rate">0%</div>
+                            <div class="stat-label">正确率</div>
+                        </div>
+                    </div>
+
+                    <div class="progress-section">
+                        <h3>今日进度</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="daily-progress"></div>
+                        </div>
+                        <p class="progress-text"><span id="words-today">0</span> / 20 词</p>
+                    </div>
+
+                    <div class="achievements-preview">
+                        <h3>最近成就</h3>
+                        <div class="badges-grid" id="badges-preview">
+                            <!-- 成就徽章预览 -->
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="startLearning()">开始学习</button>
+                        <button class="btn btn-secondary" onclick="startTest()">开始测试</button>
+                        <button class="btn btn-outline" onclick="showAchievements()">查看成就</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 学习页面 -->
+        <div id="learning-page" class="page">
+            <div class="container">
+                <div class="learning-header">
+                    <button class="back-btn" onclick="goHome()">← 返回</button>
+                    <div class="level-info">
+                        <span>第 <span id="current-level">1</span> 关</span>
+                        <span class="progress-text">进度: <span id="level-progress">1</span>/10</span>
+                    </div>
+                </div>
+
+                <div class="card-container">
+                    <div class="word-card" id="word-card" onclick="flipCard()">
+                        <div class="card-front">
+                            <div class="word-header">
+                                <h2 class="word-text" id="word-text">单词</h2>
+                                <div class="word-phonetic" id="word-phonetic">[音标]</div>
+                            </div>
+                            <div class="word-actions">
+                                <button class="audio-btn" onclick="playAudio(event)">🔊</button>
+                            </div>
+                            <div class="card-hint">点击卡片查看释义</div>
+                        </div>
+                        <div class="card-back">
+                            <div class="word-meaning" id="word-meaning">释义</div>
+                            <div class="word-example" id="word-example">例句</div>
+                            <div class="word-image" id="word-image">
+                                <img src="" alt="单词插图">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-controls">
+                    <button class="btn btn-secondary" onclick="previousWord()">上一张</button>
+                    <button class="btn btn-favorite" onclick="toggleFavorite()">⭐ 收藏</button>
+                    <button class="btn btn-primary" onclick="nextWord()">下一张</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 测试页面 -->
+        <div id="test-page" class="page">
+            <div class="container">
+                <div class="test-header">
+                    <button class="back-btn" onclick="goHome()">← 返回</button>
+                    <div class="test-info">
+                        <span>题目 <span id="test-current">1</span> / <span id="test-total">10</span></span>
+                        <span class="score">得分: <span id="test-score">0</span></span>
+                    </div>
+                </div>
+
+                <div class="test-content">
+                    <div class="question-container" id="question-container">
+                        <!-- 题目内容 -->
+                    </div>
+
+                    <div class="test-controls">
+                        <button class="btn btn-primary" id="next-question-btn" onclick="nextQuestion()" style="display: none;">下一题</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 成就页面 -->
+        <div id="achievements-page" class="page">
+            <div class="container">
+                <div class="achievements-header">
+                    <button class="back-btn" onclick="goHome()">← 返回</button>
+                    <h2>我的成就</h2>
+                </div>
+
+                <div class="achievements-content">
+                    <div class="badges-section">
+                        <h3>徽章墙</h3>
+                        <div class="badges-grid" id="badges-wall">
+                            <!-- 徽章列表 -->
+                        </div>
+                    </div>
+
+                    <div class="calendar-section">
+                        <h3>学习日历</h3>
+                        <div class="calendar" id="study-calendar">
+                            <!-- 学习日历 -->
+                        </div>
+                    </div>
+
+                    <div class="stats-section">
+                        <h3>学习统计</h3>
+                        <div class="stats-charts">
+                            <div class="chart-container">
+                                <canvas id="progress-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

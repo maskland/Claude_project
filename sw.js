@@ -4,9 +4,7 @@ const ASSETS = [
   '/index.html',
   '/style.css',
   '/script.js',
-  '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/manifest.json'
 ];
 
 // 安装Service Worker
